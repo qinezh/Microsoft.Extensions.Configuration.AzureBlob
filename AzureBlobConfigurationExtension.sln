@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2026
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureBlobConfigurationExtension", "AzureBlobConfigurationExtension\AzureBlobConfigurationExtension.csproj", "{D45C143F-8EC2-422F-ACA0-DFD51D070059}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleWebApp", "SampleWebApp\SampleWebApp.csproj", "{FF45DAB7-FC35-4D8E-B62C-6071A09BB0A4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D45C143F-8EC2-422F-ACA0-DFD51D070059}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D45C143F-8EC2-422F-ACA0-DFD51D070059}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D45C143F-8EC2-422F-ACA0-DFD51D070059}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D45C143F-8EC2-422F-ACA0-DFD51D070059}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF45DAB7-FC35-4D8E-B62C-6071A09BB0A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF45DAB7-FC35-4D8E-B62C-6071A09BB0A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF45DAB7-FC35-4D8E-B62C-6071A09BB0A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF45DAB7-FC35-4D8E-B62C-6071A09BB0A4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F5876790-4382-4487-B09A-1C61ABD23FEC}
+	EndGlobalSection
+EndGlobal
