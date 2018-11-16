@@ -58,7 +58,7 @@ namespace Microsoft.Extensions.Configuration.AzureBlob
             }
         }
 
-        public override void Load() => LoadAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+        public override void Load() => LoadAsync().Wait();
 
         private void ReloadOnChage()
         {
