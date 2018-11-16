@@ -8,9 +8,9 @@ Azure blob configuration provider implementation for Microsoft.Extensions.Config
 Configuration = new ConfigurationBuilder()
                 .AddBlobJson(new BlobJsonConfigurationOption
                 {
-                    StorageAccountName = blobConfig["StorageAccountName"],
-                    BlobContainerName = blobConfig["BlobContainerName"],
-                    ConfigurationFile = blobConfig["ConfigurationFile"],
+                    StorageAccountName = "qinezh",
+                    BlobContainerName = "containerName",
+                    ConfigurationFile = "appsettings.json",
                     StorageCredentials = storageCredentials,
                     ReloadOnChange = true
                 })
