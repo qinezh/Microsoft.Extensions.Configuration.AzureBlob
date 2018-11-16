@@ -1,17 +1,23 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace Microsoft.Extensions.Configuration.AzureBlob
 {
-    public class BlobAccessor
+    internal class BlobAccessor
     {
         protected CloudStorageAccount _storageAccount;
         protected CloudBlobContainer _blobContainer;
 
         public BlobAccessor(BlobJsonConfigurationOption option)
         {
+            if (option == null)
+            {
+                throw new ArgumentNullException(nameof(option));
+            }
+
             _storageAccount = new CloudStorageAccount(option.StorageCredentials, option.StorageAccountName, null, true);
             var cloudBlobClient = _storageAccount.CreateCloudBlobClient();
             _blobContainer = cloudBlobClient.GetContainerReference(option.BlobContainerName);
@@ -19,10 +25,14 @@ namespace Microsoft.Extensions.Configuration.AzureBlob
 
         public async Task<(BlobProperties, bool)> RetrieveIfUpdated(MemoryStream ms, string blobPath, string eTag)
         {
-            var accessCondition = new AccessCondition()
+            if (ms == null)
             {
-                IfNoneMatchETag = eTag
-            };
+                throw new ArgumentNullException(nameof(ms));
+            }
+            if (string.IsNullOrEmpty(blobPath))
+            {
+                throw new ArgumentException($"{nameof(blobPath)} can't be null or empty.");
+            }
 
             var blobRef = _blobContainer.GetBlockBlobReference(blobPath);
             try
@@ -47,7 +57,7 @@ namespace Microsoft.Extensions.Configuration.AzureBlob
                 return (blobRef.Properties, false);
             }
 
-            await blobRef.DownloadToStreamAsync(ms, accessCondition, null, null);
+            await blobRef.DownloadToStreamAsync(ms);
             return (blobRef.Properties, true);
         }
     }

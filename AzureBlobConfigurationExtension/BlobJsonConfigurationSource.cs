@@ -14,6 +14,11 @@ namespace Microsoft.Extensions.Configuration.AzureBlob
 
         public BlobJsonConfigurationSource(BlobJsonConfigurationOption option)
         {
+            if (option == null)
+            {
+                throw new ArgumentNullException(nameof(option));
+            }
+
             BlobAccessor = new BlobAccessor(option);
             ConfigurationFile = option.ConfigurationFile;
             ReloadOnChange = option.ReloadOnChange;
