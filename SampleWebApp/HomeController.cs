@@ -17,7 +17,9 @@ namespace SampleWebApp.Controllers
         {
             var config = new Dictionary<string, string>
             {
-                {"value",  _options.Value ?? "undefined" }
+                {"StorageAccountName",  _options.StorageAccountName ?? "undefined" },
+                {"BlobContainerName",  _options.BlobContainerName ?? "undefined" },
+                {"ConfigurationFile",  _options.ConfigurationFile ?? "undefined" }
             };
 
             if (_options.Metadata != null)
@@ -31,25 +33,6 @@ namespace SampleWebApp.Controllers
             ViewData["config"] = config;
 
             return View();
-        }
-
-        [HttpGet]
-        public ActionResult<Dictionary<string, string>> Get()
-        {
-            var result = new Dictionary<string, string>
-            {
-                {"value: ",  _options.Value ?? "undefined" }
-            };
-
-            if (_options.Metadata != null)
-            {
-                foreach (var (key, value) in _options.Metadata)
-                {
-                    result.Add($"metadata/{key}:", value);
-                }
-            }
-
-            return result;
         }
     }
 }
