@@ -46,10 +46,7 @@ namespace Microsoft.Extensions.Configuration.AzureBlob
                 {
                     return (null, false);
                 }
-                else
-                {
-                    throw;
-                }
+                throw;
             }
 
             if (string.Equals(blobRef.Properties.ETag, eTag))
