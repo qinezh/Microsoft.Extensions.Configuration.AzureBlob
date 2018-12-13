@@ -1,7 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.Azure.Services.AppAuthentication;
 using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Auth;
 using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace Microsoft.Extensions.Configuration.AzureBlob
@@ -18,7 +20,12 @@ namespace Microsoft.Extensions.Configuration.AzureBlob
                 throw new ArgumentNullException(nameof(option));
             }
 
-            _storageAccount = new CloudStorageAccount(option.StorageCredentials, option.StorageAccountName, null, true);
+            var accessToken = new AzureServiceTokenProvider()
+                    .GetAccessTokenAsync("https://storage.azure.com/")
+                    .Result;
+            var storageCredentials = new StorageCredentials(new TokenCredential(accessToken));
+
+            _storageAccount = new CloudStorageAccount(storageCredentials, option.StorageAccountName, null, true);
             var cloudBlobClient = _storageAccount.CreateCloudBlobClient();
             _blobContainer = cloudBlobClient.GetContainerReference(option.BlobContainerName);
         }

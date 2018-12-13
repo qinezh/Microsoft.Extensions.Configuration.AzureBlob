@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.Services.AppAuthentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.AzureBlob;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.WindowsAzure.Storage.Auth;
 
 namespace SampleWebApp
 {
@@ -15,17 +13,10 @@ namespace SampleWebApp
         {
             var localConfig = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json")
+                .AddJsonFile("appsettings.json", optional:false, reloadOnChange: true)
                 .Build();
 
             var blobConfig = localConfig.GetSection("BlobConfiguration");
-
-            var accessToken = new AzureServiceTokenProvider()
-                                .GetAccessTokenAsync("https://storage.azure.com/")
-                                .ConfigureAwait(false)
-                                .GetAwaiter()
-                                .GetResult();
-            var storageCredentials = new StorageCredentials(new TokenCredential(accessToken));
 
             Configuration = new ConfigurationBuilder()
                 .AddBlobJson(new BlobJsonConfigurationOption
@@ -33,7 +24,6 @@ namespace SampleWebApp
                     StorageAccountName = blobConfig["StorageAccountName"],
                     BlobContainerName = blobConfig["BlobContainerName"],
                     ConfigurationFile = blobConfig["ConfigurationFile"],
-                    StorageCredentials = storageCredentials,
                     ReloadOnChange = true
                 })
                 .Build();
