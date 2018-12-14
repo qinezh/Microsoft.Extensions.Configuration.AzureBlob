@@ -11,7 +11,6 @@ Configuration = new ConfigurationBuilder()
                     StorageAccountName = "qinezh",
                     BlobContainerName = "containerName",
                     ConfigurationFile = "appsettings.json",
-                    StorageCredentials = storageCredentials,
                     ReloadOnChange = true
                 })
                 .Build();
