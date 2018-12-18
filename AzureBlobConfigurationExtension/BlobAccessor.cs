@@ -20,12 +20,16 @@ namespace Microsoft.Extensions.Configuration.AzureBlob
                 throw new ArgumentNullException(nameof(option));
             }
 
-            var accessToken = new AzureServiceTokenProvider()
+            // Auth by MSI if storage credential is not provided.
+            if (option.StorageCredentials == null)
+            {
+                var accessToken = new AzureServiceTokenProvider()
                     .GetAccessTokenAsync("https://storage.azure.com/")
                     .Result;
-            var storageCredentials = new StorageCredentials(new TokenCredential(accessToken));
+                option.StorageCredentials = new StorageCredentials(new TokenCredential(accessToken));
+            }
 
-            _storageAccount = new CloudStorageAccount(storageCredentials, option.StorageAccountName, null, true);
+            _storageAccount = new CloudStorageAccount(option.StorageCredentials, option.StorageAccountName, null, true);
             var cloudBlobClient = _storageAccount.CreateCloudBlobClient();
             _blobContainer = cloudBlobClient.GetContainerReference(option.BlobContainerName);
         }
