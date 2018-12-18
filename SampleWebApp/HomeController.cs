@@ -17,9 +17,7 @@ namespace SampleWebApp.Controllers
         {
             var config = new Dictionary<string, string>
             {
-                {"StorageAccountName",  _options.StorageAccountName ?? "undefined" },
-                {"BlobContainerName",  _options.BlobContainerName ?? "undefined" },
-                {"ConfigurationFile",  _options.ConfigurationFile ?? "undefined" }
+                {"BlobUrl",  _options.BlobUrl ?? "undefined" }
             };
 
             if (_options.Metadata != null)

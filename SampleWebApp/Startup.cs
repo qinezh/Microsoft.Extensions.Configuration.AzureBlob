@@ -17,13 +17,13 @@ namespace SampleWebApp
                 .Build();
 
             var blobConfig = localConfig.GetSection("BlobConfiguration");
+            var accessKey = "";
 
             Configuration = new ConfigurationBuilder()
                 .AddBlobJson(new BlobJsonConfigurationOption
                 {
-                    StorageAccountName = blobConfig["StorageAccountName"],
-                    BlobContainerName = blobConfig["BlobContainerName"],
-                    ConfigurationFile = blobConfig["ConfigurationFile"],
+                    BlobUrl = blobConfig["BlobUrl"],
+                    AccessKey = accessKey,
                     ReloadOnChange = true
                 })
                 .Build();
