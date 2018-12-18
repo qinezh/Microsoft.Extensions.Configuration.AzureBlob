@@ -10,28 +10,27 @@ namespace Microsoft.Extensions.Configuration.AzureBlob
 {
     internal class BlobAccessor
     {
-        protected CloudStorageAccount _storageAccount;
         protected CloudBlobContainer _blobContainer;
 
-        public BlobAccessor(BlobJsonConfigurationOption option)
+        public BlobAccessor(string account, string container, string accessKey)
         {
-            if (option == null)
-            {
-                throw new ArgumentNullException(nameof(option));
-            }
-
             // Auth by MSI if storage credential is not provided.
-            if (option.StorageCredentials == null)
+            StorageCredentials storageCredentials = null;
+            if (string.IsNullOrEmpty(accessKey))
             {
                 var accessToken = new AzureServiceTokenProvider()
                     .GetAccessTokenAsync("https://storage.azure.com/")
                     .Result;
-                option.StorageCredentials = new StorageCredentials(new TokenCredential(accessToken));
+                storageCredentials = new StorageCredentials(new TokenCredential(accessToken));
+            }
+            else
+            {
+                storageCredentials = new StorageCredentials(account, accessKey);
             }
 
-            _storageAccount = new CloudStorageAccount(option.StorageCredentials, option.StorageAccountName, null, true);
-            var cloudBlobClient = _storageAccount.CreateCloudBlobClient();
-            _blobContainer = cloudBlobClient.GetContainerReference(option.BlobContainerName);
+            var storageAccount = new CloudStorageAccount(storageCredentials, account, null, true);
+            var cloudBlobClient = storageAccount.CreateCloudBlobClient();
+            _blobContainer = cloudBlobClient.GetContainerReference(container);
         }
 
         public async Task<(BlobProperties, bool)> RetrieveIfUpdated(MemoryStream ms, string blobPath, string eTag)
@@ -40,6 +39,7 @@ namespace Microsoft.Extensions.Configuration.AzureBlob
             {
                 throw new ArgumentNullException(nameof(ms));
             }
+
             if (string.IsNullOrEmpty(blobPath))
             {
                 throw new ArgumentException($"{nameof(blobPath)} can't be null or empty.");
@@ -52,15 +52,16 @@ namespace Microsoft.Extensions.Configuration.AzureBlob
             }
             catch (StorageException ex)
             {
-                var result = ex.RequestInformation;
-                if (result.HttpStatusCode == 404)
+                var requestInfo = ex.RequestInformation;
+                if (requestInfo.HttpStatusCode == 404)
                 {
                     return (null, false);
                 }
+
                 throw;
             }
 
-            if (string.Equals(blobRef.Properties.ETag, eTag))
+            if (string.Equals(blobRef.Properties?.ETag, eTag))
             {
                 return (blobRef.Properties, false);
             }

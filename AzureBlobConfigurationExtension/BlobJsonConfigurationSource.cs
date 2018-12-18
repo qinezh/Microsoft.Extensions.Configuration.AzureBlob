@@ -19,8 +19,10 @@ namespace Microsoft.Extensions.Configuration.AzureBlob
                 throw new ArgumentNullException(nameof(option));
             }
 
-            BlobAccessor = new BlobAccessor(option);
-            ConfigurationFile = option.ConfigurationFile;
+            var (account, container, file) = BlobJsonConfigurationOption.Parse(option.BlobUrl);
+
+            BlobAccessor = new BlobAccessor(account, container, option.AccessKey);
+            ConfigurationFile = file;
             ReloadOnChange = option.ReloadOnChange;
             PollingInterval = option.PollingInterval;
         }
@@ -62,10 +64,10 @@ namespace Microsoft.Extensions.Configuration.AzureBlob
 
         private void ReloadOnChage()
         {
-            _timer = new Timer(ReloadOnChange, _blobAccessor, _pollingInterval, _pollingInterval);
+            _timer = new Timer(ReloadOnChange, null, _pollingInterval, _pollingInterval);
         }
 
-        private void ReloadOnChange(object state)
+        private void ReloadOnChange(object _)
         {
             Load();
         }
