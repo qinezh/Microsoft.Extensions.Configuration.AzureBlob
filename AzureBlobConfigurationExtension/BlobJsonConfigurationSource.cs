@@ -9,7 +9,6 @@ namespace Microsoft.Extensions.Configuration.AzureBlob
     public class BlobJsonConfigurationSource : JsonConfigurationSource
     {
         internal BlobAccessor BlobAccessor { get; set; }
-        internal string ConfigurationFile { get; set; }
         internal TimeSpan PollingInterval { get; set; }
 
         public BlobJsonConfigurationSource(BlobJsonConfigurationOption option)
@@ -19,10 +18,9 @@ namespace Microsoft.Extensions.Configuration.AzureBlob
                 throw new ArgumentNullException(nameof(option));
             }
 
-            var (account, container, file) = BlobJsonConfigurationOption.Parse(option.BlobUrl);
+            var account = BlobJsonConfigurationOption.GetAccount(option.BlobUri);
 
-            BlobAccessor = new BlobAccessor(account, container, option.AccessKey);
-            ConfigurationFile = file;
+            BlobAccessor = new BlobAccessor(option.BlobUri, account, option.AccessKey);
             ReloadOnChange = option.ReloadOnChange;
             PollingInterval = option.PollingInterval;
         }
@@ -49,7 +47,6 @@ namespace Microsoft.Extensions.Configuration.AzureBlob
             }
 
             _blobAccessor = source.BlobAccessor;
-            _configurationFile = source.ConfigurationFile;
             _pollingInterval = source.PollingInterval;
 
             Load();
@@ -76,14 +73,14 @@ namespace Microsoft.Extensions.Configuration.AzureBlob
         {
             using (var ms = new MemoryStream())
             {
-                var (property, updated) = await _blobAccessor.RetrieveIfUpdated(ms, _configurationFile, _etag);
+                var (etag, updated) = await _blobAccessor.RetrieveIfUpdated(ms, _etag);
 
                 if (!updated)
                 {
                     return;
                 }
 
-                _etag = property.ETag;
+                _etag = etag;
                 ms.Position = 0;
                 base.Load(ms);
             }

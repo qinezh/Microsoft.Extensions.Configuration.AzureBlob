@@ -1,27 +1,29 @@
-﻿using Microsoft.WindowsAzure.Storage.Auth;
-using System;
-using System.Text.RegularExpressions;
+﻿using System;
+using System.Linq;
 
 namespace Microsoft.Extensions.Configuration.AzureBlob
 {
     public class BlobJsonConfigurationOption
     {
-        private static readonly Regex s_blobUrlRegex = new Regex(@"(?<=http|https):\/\/(?<account>[a-z0-9]+)\.blob\.core\.windows\.net\/(?<container>[a-z0-9-]+)\/(?<file>.+)", RegexOptions.Compiled);
-
-        public string BlobUrl { get; set; }
+        public Uri BlobUri { get; set; }
         public string AccessKey { get; set; }
         public bool ReloadOnChange { get; set; } = false;
         public TimeSpan PollingInterval { get; set; } = TimeSpan.FromSeconds(5);
 
-        internal static (string, string, string) Parse(string blobUrl)
+        internal static string GetAccount(Uri blobUri)
         {
-            var match = s_blobUrlRegex.Match(blobUrl);
-            if (match.Success)
+            if (blobUri == null)
             {
-                return (match.Groups["account"].Value, match.Groups["container"].Value, match.Groups["file"].Value);
+                throw new ArgumentNullException(nameof(blobUri));
             }
 
-            throw new ArgumentException($"{nameof(blobUrl)} with value {blobUrl} can't be parsed.");
+            var host = blobUri.Host;
+            if (string.IsNullOrEmpty(host))
+            {
+                return string.Empty;
+            }
+
+            return host.Split('.').First();
         }
     }
 }

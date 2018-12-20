@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.AzureBlob;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace SampleWebApp
 {
@@ -22,7 +23,7 @@ namespace SampleWebApp
             Configuration = new ConfigurationBuilder()
                 .AddBlobJson(new BlobJsonConfigurationOption
                 {
-                    BlobUrl = blobConfig["BlobUrl"],
+                    BlobUri = new Uri(blobConfig["BlobUrl"]),
                     AccessKey = accessKey,
                     ReloadOnChange = true
                 })

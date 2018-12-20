@@ -10,9 +10,9 @@ namespace Microsoft.Extensions.Configuration.AzureBlob
 {
     internal class BlobAccessor
     {
-        protected CloudBlobContainer _blobContainer;
+        protected CloudBlockBlob _blob;
 
-        public BlobAccessor(string account, string container, string accessKey)
+        public BlobAccessor(Uri blobUri, string account, string accessKey)
         {
             // Auth by MSI if storage credential is not provided.
             StorageCredentials storageCredentials = null;
@@ -28,27 +28,19 @@ namespace Microsoft.Extensions.Configuration.AzureBlob
                 storageCredentials = new StorageCredentials(account, accessKey);
             }
 
-            var storageAccount = new CloudStorageAccount(storageCredentials, account, null, true);
-            var cloudBlobClient = storageAccount.CreateCloudBlobClient();
-            _blobContainer = cloudBlobClient.GetContainerReference(container);
+            _blob = new CloudBlockBlob(blobUri, storageCredentials);
         }
 
-        public async Task<(BlobProperties, bool)> RetrieveIfUpdated(MemoryStream ms, string blobPath, string eTag)
+        public async Task<(string, bool)> RetrieveIfUpdated(MemoryStream ms, string eTag)
         {
             if (ms == null)
             {
                 throw new ArgumentNullException(nameof(ms));
             }
 
-            if (string.IsNullOrEmpty(blobPath))
-            {
-                throw new ArgumentException($"{nameof(blobPath)} can't be null or empty.");
-            }
-
-            var blobRef = _blobContainer.GetBlockBlobReference(blobPath);
             try
             {
-                await blobRef.FetchAttributesAsync();
+                await _blob.FetchAttributesAsync();
             }
             catch (StorageException ex)
             {
@@ -61,13 +53,13 @@ namespace Microsoft.Extensions.Configuration.AzureBlob
                 throw;
             }
 
-            if (string.Equals(blobRef.Properties?.ETag, eTag))
+            if (string.IsNullOrEmpty(_blob.Properties?.ETag) && string.Equals(_blob.Properties.ETag, eTag))
             {
-                return (blobRef.Properties, false);
+                return (_blob.Properties.ETag, false);
             }
 
-            await blobRef.DownloadToStreamAsync(ms);
-            return (blobRef.Properties, true);
+            await _blob.DownloadToStreamAsync(ms);
+            return (_blob.Properties?.ETag, true);
         }
     }
 }
