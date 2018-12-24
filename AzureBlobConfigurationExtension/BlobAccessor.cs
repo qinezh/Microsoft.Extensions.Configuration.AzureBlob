@@ -53,7 +53,7 @@ namespace Microsoft.Extensions.Configuration.AzureBlob
                 throw;
             }
 
-            if (string.IsNullOrEmpty(_blob.Properties?.ETag) && string.Equals(_blob.Properties.ETag, eTag))
+            if (string.IsNullOrEmpty(_blob.Properties?.ETag) || string.Equals(_blob.Properties.ETag, eTag))
             {
                 return (_blob.Properties.ETag, false);
             }

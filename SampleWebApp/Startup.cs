@@ -25,7 +25,9 @@ namespace SampleWebApp
                 {
                     BlobUri = new Uri(blobConfig["BlobUrl"]),
                     AccessKey = accessKey,
-                    ReloadOnChange = true
+                    ReloadOnChange = true,
+                    LogReloadException = e => Console.WriteLine(e.Message),
+                    ActionOnReload = () => Console.WriteLine("Reloaded.")
                 })
                 .Build();
         }

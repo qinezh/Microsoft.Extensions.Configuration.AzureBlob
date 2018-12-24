@@ -9,6 +9,8 @@ namespace Microsoft.Extensions.Configuration.AzureBlob
         public string AccessKey { get; set; }
         public bool ReloadOnChange { get; set; } = false;
         public TimeSpan PollingInterval { get; set; } = TimeSpan.FromSeconds(5);
+        public Action<Exception> LogReloadException { get; set; }
+        public Action ActionOnReload { get; set; }
 
         internal static string GetAccount(Uri blobUri)
         {
