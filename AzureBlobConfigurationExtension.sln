@@ -5,13 +5,13 @@ VisualStudioVersion = 15.0.27703.2026
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureBlobConfigurationExtension", "AzureBlobConfigurationExtension\AzureBlobConfigurationExtension.csproj", "{D45C143F-8EC2-422F-ACA0-DFD51D070059}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleWebApp", "SampleWebApp\SampleWebApp.csproj", "{FF45DAB7-FC35-4D8E-B62C-6071A09BB0A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleWebApp", "samples\SampleWebApp\SampleWebApp.csproj", "{FF45DAB7-FC35-4D8E-B62C-6071A09BB0A4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleConsoleApp", "SampleConsoleApp\SampleConsoleApp.csproj", "{12D03748-B325-48C3-9B75-A5ED46701C7F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleConsoleApp", "samples\SampleConsoleApp\SampleConsoleApp.csproj", "{12D03748-B325-48C3-9B75-A5ED46701C7F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleWebjob", "SampleWebjob\SampleWebjob.csproj", "{370FC2BE-EADF-40B7-9E40-5D5D87A60423}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleWebjob", "samples\SampleWebjob\SampleWebjob.csproj", "{370FC2BE-EADF-40B7-9E40-5D5D87A60423}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{F9256503-27B9-47F9-B9B0-8299120F3522}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "samples\Common\Common.csproj", "{F9256503-27B9-47F9-B9B0-8299120F3522}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

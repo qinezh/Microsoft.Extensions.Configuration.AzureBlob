@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AzureBlobConfigurationExtension\AzureBlobConfigurationExtension.csproj" />
+    <ProjectReference Include="..\..\AzureBlobConfigurationExtension\AzureBlobConfigurationExtension.csproj" />
     <ProjectReference Include="..\Common\Common.csproj" />
   </ItemGroup>
 
