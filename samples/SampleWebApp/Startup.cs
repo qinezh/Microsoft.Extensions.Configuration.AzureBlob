@@ -5,13 +5,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.AzureBlob;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 
 namespace SampleWebApp
 {
     public class Startup
     {
-        public Startup(IHostingEnvironment env)
+        public Startup(IHostingEnvironment env, ILogger<Startup> logger)
         {
             var localConfig = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
@@ -25,8 +26,8 @@ namespace SampleWebApp
                 {
                     BlobUri = new Uri(blobConfig["BlobUrl"]),
                     ReloadOnChange = true,
-                    LogReloadException = e => Console.WriteLine(e.Message),
-                    ActionOnReload = () => Console.WriteLine("Reloaded.")
+                    LogReloadException = ex => logger.LogError(ex, ex.Message),
+                    ActionOnReload = () => logger.LogInformation("Reloaded.")
                 })
                 .Build();
         }

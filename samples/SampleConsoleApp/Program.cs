@@ -11,8 +11,9 @@ namespace SampleConsoleApp
 {
     class Program
     {
-        static async Task Main(string[] args)
+        static void Main(string[] args)
         {
+            ILogger logger = null;
             var builder = new HostBuilder()
                 .ConfigureAppConfiguration((context, configuration) =>
                 {
@@ -27,8 +28,8 @@ namespace SampleConsoleApp
                     {
                         BlobUri = new Uri(blobConfig["BlobUrl"]),
                         ReloadOnChange = true,
-                        LogReloadException = e => Console.WriteLine(e.Message),
-                        ActionOnReload = () => Console.WriteLine("Reloaded.")
+                        LogReloadException = ex => logger.LogError(ex, ex.Message),
+                        ActionOnReload = () => logger.LogInformation("Reloaded.")
                     });
                 })
                 .ConfigureServices((context, services) =>
@@ -43,7 +44,11 @@ namespace SampleConsoleApp
                     logging.AddConsole();
                 });
 
-            await builder.RunConsoleAsync();
+            using (var host = builder.Build())
+            {
+                logger = host.Services.GetRequiredService<ILogger<Program>>();
+                host.Run();
+            }
         }
     }
 }

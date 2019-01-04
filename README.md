@@ -8,10 +8,11 @@ Azure blob configuration provider implementation for Microsoft.Extensions.Config
 Configuration = new ConfigurationBuilder()
                 .AddBlobJson(new BlobJsonConfigurationOption
                 {
-                    StorageAccountName = "qinezh",
-                    BlobContainerName = "containerName",
-                    ConfigurationFile = "appsettings.json",
-                    ReloadOnChange = true
+                    BlobUri = "https://qinezh.blob.core.windows.net/config/appsettings.json",
+                    IsPublic = false,
+                    ReloadOnChange = true,
+                    LogReloadException = e => logger.LogError(e, e.Message),
+                    ActionOnReload = () => logger.LogInformation("Reloaded.")
                 })
                 .Build();
 ```

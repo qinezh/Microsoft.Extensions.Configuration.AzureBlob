@@ -27,7 +27,7 @@ namespace SampleWebjob
                     {
                         BlobUri = new Uri(blobConfig["BlobUrl"]),
                         ReloadOnChange = true,
-                        LogReloadException = e => logger.LogError(e, e.Message),
+                        LogReloadException = ex => logger.LogError(ex, ex.Message),
                         ActionOnReload = () => logger.LogInformation("Reloaded.")
                     });
                 })
