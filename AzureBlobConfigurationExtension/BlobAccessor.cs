@@ -12,23 +12,25 @@ namespace Microsoft.Extensions.Configuration.AzureBlob
     {
         protected CloudBlockBlob _blob;
 
-        public BlobAccessor(Uri blobUri, string account, string accessKey)
+        public BlobAccessor(Uri blobUri, string account, string accessKey, bool isPublic)
         {
-            // Auth by MSI if storage credential is not provided.
-            StorageCredentials storageCredentials = null;
-            if (string.IsNullOrEmpty(accessKey))
+            if (isPublic)
+            {
+                _blob = new CloudBlockBlob(blobUri);
+            }
+            else if (string.IsNullOrEmpty(accessKey))
             {
                 var accessToken = new AzureServiceTokenProvider()
                     .GetAccessTokenAsync("https://storage.azure.com/")
                     .Result;
-                storageCredentials = new StorageCredentials(new TokenCredential(accessToken));
+                var storageCredentials = new StorageCredentials(new TokenCredential(accessToken));
+                _blob = new CloudBlockBlob(blobUri, storageCredentials);
             }
             else
             {
-                storageCredentials = new StorageCredentials(account, accessKey);
+                var storageCredentials = new StorageCredentials(account, accessKey);
+                _blob = new CloudBlockBlob(blobUri, storageCredentials);
             }
-
-            _blob = new CloudBlockBlob(blobUri, storageCredentials);
         }
 
         public async Task<(string, bool)> RetrieveIfUpdated(MemoryStream ms, string eTag)
@@ -38,20 +40,7 @@ namespace Microsoft.Extensions.Configuration.AzureBlob
                 throw new ArgumentNullException(nameof(ms));
             }
 
-            try
-            {
-                await _blob.FetchAttributesAsync();
-            }
-            catch (StorageException ex)
-            {
-                var requestInfo = ex.RequestInformation;
-                if (requestInfo.HttpStatusCode == 404)
-                {
-                    return (null, false);
-                }
-
-                throw;
-            }
+            await _blob.FetchAttributesAsync();
 
             if (string.IsNullOrEmpty(_blob.Properties?.ETag) || string.Equals(_blob.Properties.ETag, eTag))
             {

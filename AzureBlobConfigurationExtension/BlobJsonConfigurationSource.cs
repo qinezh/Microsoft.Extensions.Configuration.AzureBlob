@@ -14,7 +14,7 @@ namespace Microsoft.Extensions.Configuration.AzureBlob
 
             var account = BlobJsonConfigurationOption.GetAccount(option.BlobUri);
 
-            BlobAccessor = new BlobAccessor(option.BlobUri, account, option.AccessKey);
+            BlobAccessor = new BlobAccessor(option.BlobUri, account, option.AccessKey, option.IsPublic);
         }
 
         public override IConfigurationProvider Build(IConfigurationBuilder builder)
