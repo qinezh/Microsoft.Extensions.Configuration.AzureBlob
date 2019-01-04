@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Common;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -18,13 +19,11 @@ namespace SampleWebApp
                 .Build();
 
             var blobConfig = localConfig.GetSection("BlobConfiguration");
-            var accessKey = "";
 
             Configuration = new ConfigurationBuilder()
                 .AddBlobJson(new BlobJsonConfigurationOption
                 {
                     BlobUri = new Uri(blobConfig["BlobUrl"]),
-                    AccessKey = accessKey,
                     ReloadOnChange = true,
                     LogReloadException = e => Console.WriteLine(e.Message),
                     ActionOnReload = () => Console.WriteLine("Reloaded.")
