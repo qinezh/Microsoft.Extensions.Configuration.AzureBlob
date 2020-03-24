@@ -1,0 +1,26 @@
+name: .NET Core
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.101
+    - name: Build and pack with dotnet
+      run: dotnet pack -c Release -o out /p:Version=${{ github.event.release.tag_name }}
+    - name: Setup nuget
+      uses: nuget/setup-nuget@v1
+      with:
+        nuget-api-key: ${{ secrets.NUGET_AUTH_TOKEN }}
+        nuget-version: '5.x'
+    - name: Publish to Nuget.org
+      working-directory: ./out
+      run: nuget push *.nupkg -Source https://api.nuget.org/v3/index.json -NoSymbols
