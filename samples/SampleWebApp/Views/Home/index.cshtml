@@ -1,0 +1,29 @@
+﻿<a href="https://github.com/qinezh/Microsoft.Extensions.Configuration.AzureBlob">
+    <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub">
+</a>
+
+<h2>
+    <a href="https://ceapex.visualstudio.com/Engineering/_git/SampleConfigurationRepo">Configurations</a>
+    <a href="https://ceapex.visualstudio.com/Engineering/_build/latest?definitionId=1154"><img src="https://ceapex.visualstudio.com/Engineering/_apis/build/status/test/Sync%20configuration%20from%20repo%20to%20blob" alt="Build status"></a>
+</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">Key</th>
+            <th scope="col">Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            var config = ViewData["config"] as Dictionary<string, string>;
+            foreach (var (key, value) in config)
+            {
+                <tr>
+                    <td>@key</td>
+                    <td>@value</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
