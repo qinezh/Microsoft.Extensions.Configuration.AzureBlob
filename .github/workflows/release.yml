@@ -15,7 +15,7 @@ jobs:
       with:
         dotnet-version: 3.1.101
     - name: Build and pack with dotnet
-      run: dotnet pack -c Release -o out /p:Version=${{ github.event.release.tag_name }}
+      run: dotnet pack src -c Release -o out /p:Version=${{ github.event.release.tag_name }}
     - name: Setup nuget
       uses: nuget/setup-nuget@v1
       with:
