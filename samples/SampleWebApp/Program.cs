@@ -29,7 +29,6 @@ namespace SampleWebApp
                     configuration.AddBlobJson(new BlobJsonConfigurationOption
                     {
                         BlobUri = new Uri(blobConfig["BlobUrl"]),
-                        IsPublic = true,
                         ReloadOnChange = true,
                         LogReloadException = ex => s_logger.LogError(ex, ex.Message),
                         ActionOnReload = () => s_logger.LogInformation("Reloaded.")

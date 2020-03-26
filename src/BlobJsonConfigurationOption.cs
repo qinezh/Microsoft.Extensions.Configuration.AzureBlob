@@ -7,7 +7,6 @@ namespace Microsoft.Extensions.Configuration.AzureBlob
     {
         public Uri BlobUri { get; set; }
         public string SASToken { get; set; }
-        public bool IsPublic { get; set; }
         public bool ReloadOnChange { get; set; } = false;
         public TimeSpan PollingInterval { get; set; } = TimeSpan.FromSeconds(5);
         public Action<Exception> LogReloadException { get; set; }

@@ -28,7 +28,6 @@ Configuration = new ConfigurationBuilder()
                 .AddBlobJson(new BlobJsonConfigurationOption
                 {
                     BlobUri = "{the_blob_uri}",
-                    IsPublic = false,
                     ReloadOnChange = true,
                     LogReloadException = e => logger.LogError(e, e.Message),
                     ActionOnReload = () => logger.LogInformation("Reloaded.")

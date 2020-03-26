@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Azure.Services.AppAuthentication;
+using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Auth;
 using Microsoft.WindowsAzure.Storage.Blob;
 
@@ -12,29 +13,26 @@ namespace Microsoft.Extensions.Configuration.AzureBlob
     {
         protected CloudBlockBlob _blob;
 
-        public BlobAccessor(Uri blobUri, string account, string sasToken, bool isPublic)
+        private BlobAccessor(CloudBlockBlob blob)
         {
-            if (isPublic)
-            {
-                _blob = new CloudBlockBlob(blobUri);
-            }
-            else if (string.IsNullOrEmpty(sasToken))
-            {
-                var azureServiceTokenProvider = new AzureServiceTokenProvider();
-                var tokenAndFrequency = TokenRenewerAsync(azureServiceTokenProvider, CancellationToken.None).GetAwaiter().GetResult();
-                var tokenCredential = new TokenCredential(tokenAndFrequency.Token,
-                                                            TokenRenewerAsync,
-                                                            azureServiceTokenProvider,
-                                                            tokenAndFrequency.Frequency.Value);
+            _blob = blob;
+        }
 
-                var storageCredentials = new StorageCredentials(tokenCredential);
-                _blob = new CloudBlockBlob(blobUri, storageCredentials);
-            }
-            else
+        public static BlobAccessor Create(Uri blobUri, string account, string sasToken)
+        {
+            if (!string.IsNullOrEmpty(sasToken))
             {
                 var storageCredentials = new StorageCredentials(account, sasToken);
-                _blob = new CloudBlockBlob(blobUri, storageCredentials);
+                var blob = new CloudBlockBlob(blobUri, storageCredentials);
+                return new BlobAccessor(blob);
             }
+
+            if (IsBlobPublic(blobUri).Result)
+            {
+                return new BlobAccessor(new CloudBlockBlob(blobUri));
+            }
+
+            return CreateBlobAccessorWithAAD(blobUri);
         }
 
         public async Task<(string, bool)> RetrieveIfUpdated(MemoryStream ms, string eTag)
@@ -61,10 +59,39 @@ namespace Microsoft.Extensions.Configuration.AzureBlob
             var next = (authResult.ExpiresOn - DateTimeOffset.UtcNow) - TimeSpan.FromMinutes(5);
             if (next.Ticks < 0)
             {
-                next = default(TimeSpan);
+                next = default;
             }
 
             return new NewTokenAndFrequency(authResult.AccessToken, next);
+        }
+
+        private static async Task<bool> IsBlobPublic(Uri blobUri)
+        {
+            try
+            {
+                // check if the blob can be accessed directly.
+                await new CloudBlockBlob(blobUri).FetchAttributesAsync();
+            }
+            catch (StorageException)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private static BlobAccessor CreateBlobAccessorWithAAD(Uri blobUri)
+        {
+            var azureServiceTokenProvider = new AzureServiceTokenProvider();
+            var tokenAndFrequency = TokenRenewerAsync(azureServiceTokenProvider, CancellationToken.None).GetAwaiter().GetResult();
+            var tokenCredential = new TokenCredential(tokenAndFrequency.Token,
+                                                        TokenRenewerAsync,
+                                                        azureServiceTokenProvider,
+                                                        tokenAndFrequency.Frequency.Value);
+
+            var storageCredentials = new StorageCredentials(tokenCredential);
+            var blob = new CloudBlockBlob(blobUri, storageCredentials);
+            return new BlobAccessor(blob);
         }
     }
 }
