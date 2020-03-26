@@ -1,12 +1,26 @@
 # Microsoft.Extensions.Configuration.AzureBlob
 
+[![Nuget](https://img.shields.io/nuget/v/AzureBlobConfigurationExtension?style=flat-square)](https://www.nuget.org/packages/AzureBlobConfigurationExtension/)
+
 Azure blob configuration provider implementation for Microsoft.Extensions.Configuration.
 
 
-With this extension, multiple instances can share the application settings saved in Azure Blob with auto-reload supported.
+With this extension, multiple instances can share the application settings saved in Azure Blob, and below functionalities are supported:
+* auto reload for configuration updates.
+* version control with the git repo. 
+* high avalibility as the configuration is stored at Azure Blob.
+
+## Workflow
+![](media/workflow.png)
 
 ## Usage
 
+Install package:
+```
+dotnet add package AzureBlobConfigurationExtension
+```
+
+Code sample:
 ```csharp
 using Microsoft.Extensions.Configuration.AzureBlob;
 
