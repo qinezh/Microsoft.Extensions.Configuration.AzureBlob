@@ -9,12 +9,8 @@ using Azure.Storage.Blobs.Models;
 
 namespace Microsoft.Extensions.Configuration.AzureBlob.Core
 {
-    internal sealed class BlobAccessor : IDisposable
+    internal sealed class BlobAccessor
     {
-        private int disposed;
-
-        private readonly SemaphoreSlim sync = new SemaphoreSlim(0, 1);
-
         private readonly Func<CancellationToken, Task<BlobClient>> blobClientFactory;
         private readonly Func<CancellationToken> fetchCancellationTokenFactory;
 
@@ -28,8 +24,6 @@ namespace Microsoft.Extensions.Configuration.AzureBlob.Core
 
         public async Task<(ETag, bool)> RetrieveIfUpdated(MemoryStream ms, ETag eTag)
         {
-            this.ThrowIfDisposed();
-
             if (ms == null)
             {
                 throw new ArgumentNullException(nameof(ms));
@@ -50,24 +44,6 @@ namespace Microsoft.Extensions.Configuration.AzureBlob.Core
             await blobClient.DownloadToAsync(ms, ct)
                 .ConfigureAwait(false);
             return (properties.Value.ETag, true);
-        }
-
-        public void Dispose()
-        {
-            if (Interlocked.CompareExchange(ref disposed, 1, 0) != 0)
-            {
-                return;
-            }
-
-            sync?.Dispose();
-        }
-
-        private void ThrowIfDisposed()
-        {
-            if (this.disposed == 1)
-            {
-                throw new ObjectDisposedException(nameof(BlobAccessor));
-            }
         }
     }
 }
