@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Extensions.Configuration.AzureBlob.Core;
 
 namespace Microsoft.Extensions.Configuration.AzureBlob
 {
@@ -6,12 +7,7 @@ namespace Microsoft.Extensions.Configuration.AzureBlob
     {
         public static IConfigurationBuilder AddBlobJson(this IConfigurationBuilder builder, BlobJsonConfigurationOption option)
         {
-            if (builder == null)
-            {
-                throw new ArgumentNullException(nameof(builder));
-            }
-
-            return builder.Add(new BlobJsonConfigurationSource(option));
+            return builder.Add(new BlobJsonConfigurationSource(option ?? throw new ArgumentNullException(nameof(builder))));
         }
     }
 }
