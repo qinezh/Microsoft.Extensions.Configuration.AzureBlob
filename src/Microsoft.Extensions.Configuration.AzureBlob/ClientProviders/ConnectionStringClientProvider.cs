@@ -20,7 +20,7 @@ namespace Microsoft.Extensions.Configuration.AzureBlob.ClientProviders
         public override Task<BlobClient> Get(Uri blobUri, CancellationToken cancellationToken)
         {
             // skip first '/' and container name
-            var blobName = string.Join("/", blobUri.Segments.Skip(2));
+            var blobName = string.Join(string.Empty, blobUri.Segments.Skip(2));
 
             var client = new BlobContainerClient(this.connectionString, this.container).GetBlobClient(blobName);
 
