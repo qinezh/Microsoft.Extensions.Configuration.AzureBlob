@@ -1,6 +1,7 @@
-# Microsoft.Extensions.Configuration.AzureBlob
+# DDzia.Microsoft.Extensions.Configuration.AzureBlob
 
-[![Nuget](https://img.shields.io/nuget/v/AzureBlobConfigurationExtension?style=flat-square)](https://www.nuget.org/packages/AzureBlobConfigurationExtension/)
+[![Build Status](https://dev.azure.com/ddziaddzia/GH/_apis/build/status/DDzia.Extensions.Configuration.AzureBlob?branchName=master)](https://dev.azure.com/ddziaddzia/GH/_build/latest?definitionId=132&branchName=master)
+[![Nuget](https://img.shields.io/nuget/v/DDzia.Extensions.Configuration.AzureBlob?style=flat-square)](https://www.nuget.org/packages/DDzia.Extensions.Configuration.AzureBlob/)
 
 Azure blob configuration provider implementation for Microsoft.Extensions.Configuration.
 
@@ -11,14 +12,11 @@ With this extension, multiple instances can share the application settings saved
 * version control with the git repo. 
 * high avalibility as the configuration is stored at Azure Blob.
 
-## Workflow
-![](media/workflow.png)
-
 ## Usage
 
 Install package:
 ```
-dotnet add package AzureBlobConfigurationExtension
+dotnet add package DDzia.Microsoft.Extensions.Configuration.AzureBlob
 ```
 
 Code sample:
@@ -26,19 +24,11 @@ Code sample:
 using Microsoft.Extensions.Configuration.AzureBlob;
 
 Configuration = new ConfigurationBuilder()
-                .AddBlobJson(new BlobJsonConfigurationOption
-                {
-                    BlobUri = "{the_blob_uri}",
-                    ReloadOnChange = true,
-                    LogReloadException = e => logger.LogError(e, e.Message),
-                    ActionOnReload = () => logger.LogInformation("Reloaded.")
-                })
+                .AddBlobJson(
+                        new BlobJsonConfigurationOption
+                        {
+                            BlobUri = new Uri("uri-to-blob-object"),
+                            ClientProvider = new ConnectionStringClientProvider("storage-account-connection-string")
+                        })
                 .Build();
 ```
-
-
-If the provided blob is:
-
-* public => the blob will be accessed directly.
-* private with SAS token => the blob will be accessed by the SAS token.
-* private without SAS token => the blob will be accessed by MSI/AAD automatically.
