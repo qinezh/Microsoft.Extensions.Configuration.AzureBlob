@@ -1,9 +1,26 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageId>DDzia.Microsoft.Extensions.Configuration.AzureBlob</PackageId>
+    <Authors>DDzia</Authors>
+    <Company>DDzia</Company>
+    <Product>DDzia.Microsoft.Extensions.Configuration.AzureBlob</Product>
+    <Description>Azure blob configuration provider implementation for Microsoft.Extensions.Configuration.</Description>
+    <RepositoryUrl>https://github.com/DDzia/DDzia.Extensions.Configuration.AzureBlob</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>config, azure, storage, blobs, blob, remoteconfig</PackageTags>
+    <PackageLicenseFile>license.txt</PackageLicenseFile>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Azure.Storage.Blobs" Version="12.10.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="license.txt">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 </Project>
